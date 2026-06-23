@@ -55,6 +55,24 @@ Both hypotheses supported:
 
 Hard-example sampling gives the largest and most statistically robust gain: a 17% relative improvement in Dice over random sampling, achieved with zero changes to the model architecture.
 
+## Ethics & Data Management
+
+Reviewed and approved by BUas supervisory staff under the BUas Research Ethics Review Board process — classified **low risk**: no human participants, no personal data, GDPR not triggered (the dataset is exclusively plant images). Funded entirely through the standard BUas curriculum, no external funding or conflicts of interest.
+
+Data management followed a written plan: all data and model checkpoints stayed on the BUas GPU server (`/home/y2b/`) only, never on personal devices or cloud storage; the original raw dataset was never modified, only copied for preprocessing; access was restricted to me and BUas supervisory staff; a fixed seed (42) made every result reproducible end to end.
+
+## Risk Management
+
+Risks were tracked from project start through final submission (10 identified, logged with dated entries as they materialized). The most consequential:
+
+| Risk | Response | Outcome |
+|---|---|---|
+| Severe class imbalance could make baseline training fail outright | Confirmed via EDA before training; designed H1/H2 explicitly to counter it | Resolved — both strategies improved on baseline |
+| Single training run per strategy — can't separate strategy effect from random variation | Applied Wilcoxon + Cohen's d + bootstrap CIs instead of relying on raw score gaps; documented as a limitation | Accepted, statistically mitigated |
+| Small test set (74 images) limits statistical power | Non-parametric testing (no normality assumption) + 1,000-iteration bootstrap CIs | Accepted, mitigated |
+| GPU memory constraints forced hard-example error maps to refresh every 10 epochs instead of 5 | Documented as a deviation; monitored validation Dice for stagnation | Realized, managed — logged in notebook |
+| Identical hyperparameters across all three strategies could favor one over another | Kept deliberately identical to isolate the sampling-strategy effect (correct controlled-experiment design); flagged as a limitation rather than tuned away | Accepted by design |
+
 ## Limitations
 
 - Small test set (74 images) — limited statistical power.
@@ -75,7 +93,10 @@ Repeat each experiment 3–5× to quantify run-to-run variability; test a hybrid
 ├── research_proposal.pdf      # full proposal: literature review, methodology, stats plan
 ├── eda_notebook.ipynb          # exploratory data analysis
 ├── research_notebook.ipynb     # implementation, training, evaluation, hypothesis testing
-└── poster.pdf                  # A0 research poster (final presentation)
+├── poster.pdf                  # A0 research poster (final presentation)
+├── risk_log.md                 # risk register with dated entries, tracked start to finish
+├── data_management_plan.md     # storage, access control, FAIR compliance
+└── ethics_application.docx     # BUas Research Ethics Review Board application (approved, low risk)
 ```
 
 ## Tech Stack
